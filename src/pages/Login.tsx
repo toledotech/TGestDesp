@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Eye, EyeOff } from "lucide-react"
 import { useAuth } from "@/hooks/useAuth"
-import logo from "@/assets/logo.png"
+import logo from "../../imgs/logoGestDesp.png"
 import { Footer } from "@/components/layout/Footer"
 
 const Login = () => {
@@ -68,8 +68,8 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 to-success/5 p-4">
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="text-center space-y-4">
-          <div className="mx-auto w-20 h-20 flex items-center justify-center">
-            <img src={logo} alt="GestDesp Logo" className="w-full h-full object-contain" />
+          <div className="mx-auto flex items-center justify-center">
+            <img src={logo} alt="GestDesp Logo" className="h-72 w-auto object-contain" />
           </div>
           <div>
             <CardTitle className="text-2xl font-bold">GestDesp</CardTitle>
