@@ -14,6 +14,7 @@ import { ReceitasDespesasChart } from "@/components/relatorios/ReceitasDespesasC
 import { ReceitasDespesasTable } from "@/components/relatorios/ReceitasDespesasTable"
 import { FluxoCaixaChart } from "@/components/relatorios/FluxoCaixaChart"
 import { FluxoCaixaTable } from "@/components/relatorios/FluxoCaixaTable"
+import { ProcessosLojaTable } from "@/components/relatorios/ProcessosLojaTable"
 import { useRelatorios } from "@/hooks/useRelatorios"
 import { usePlanLimits } from "@/hooks/usePlanLimits"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -104,13 +105,14 @@ const Relatorios = () => {
         </div>
       ) : (
         <Tabs defaultValue="periodo" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7">
+          <TabsList className="grid w-full grid-cols-8">
             {/* ── Abas básicas (todos os planos) ── */}
             <TabsTrigger value="periodo">Por Período</TabsTrigger>
             <TabsTrigger value="status">Por Status</TabsTrigger>
             <TabsTrigger value="cliente">Por Cliente</TabsTrigger>
             <TabsTrigger value="servico">Por Serviço</TabsTrigger>
             <TabsTrigger value="prazos">Prazos</TabsTrigger>
+            <TabsTrigger value="loja">Por Loja</TabsTrigger>
 
             {/* ── Aba Fluxo de Caixa (Básico+) ── */}
             <TabsTrigger value="fluxo" className="gap-1">
@@ -149,6 +151,11 @@ const Relatorios = () => {
           <TabsContent value="prazos" className="space-y-6">
             <ControlePrazosChart data={controlePrazos} />
             <ControlePrazosTable data={controlePrazos} />
+          </TabsContent>
+
+          {/* ── Por Loja — todos os planos ── */}
+          <TabsContent value="loja" className="space-y-6">
+            <ProcessosLojaTable filtros={filtros} />
           </TabsContent>
 
           {/* ── Fluxo de Caixa — Básico ou superior ── */}
