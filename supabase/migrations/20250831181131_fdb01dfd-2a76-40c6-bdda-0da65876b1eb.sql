@@ -1,0 +1,2 @@
+-- Migration substituída pela versão correta na migration seguinte (20250831181158)
+-- O tipo USER-DEFINED desta versão era inválido

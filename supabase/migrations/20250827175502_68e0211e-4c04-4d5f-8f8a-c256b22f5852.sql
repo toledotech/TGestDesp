@@ -1,0 +1,1 @@
+-- Dados de exemplo removidos: duplicata da migration anterior

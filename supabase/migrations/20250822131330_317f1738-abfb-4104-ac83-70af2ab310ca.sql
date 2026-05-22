@@ -1,0 +1,2 @@
+-- Migration consolidada na migration anterior (20250822131252)
+-- Este arquivo é mantido apenas para preservar o histórico de migrations

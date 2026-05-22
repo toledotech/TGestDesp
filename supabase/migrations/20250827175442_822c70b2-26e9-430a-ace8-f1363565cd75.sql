@@ -1,0 +1,1 @@
+-- Dados de exemplo removidos: user_id hardcoded não existe em auth.users
