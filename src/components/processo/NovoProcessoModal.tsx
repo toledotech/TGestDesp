@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Plus, User, Car } from "lucide-react"
 import { useProcessos, type CreateProcessoData, type ServicoTipo, type ProcessoStatus } from "@/hooks/useProcessos"
+import { useLojas } from "@/hooks/useLojas"
 import { useToast } from "@/hooks/use-toast"
 
 const servicosOptions: ServicoTipo[] = [
@@ -39,14 +40,18 @@ export const NovoProcessoModal = ({ children }: NovoProcessoModalProps) => {
   const [showNovoVeiculo, setShowNovoVeiculo] = useState(false)
   
   const { createProcesso, createCliente, createVeiculo, clientes, veiculos } = useProcessos()
+  const { lojas } = useLojas()
   const { toast } = useToast()
 
   const [formData, setFormData] = useState<CreateProcessoData>({
     cliente_id: '',
     veiculo_id: '',
+    loja_id: '',
     servico: 'Transferência de Propriedade',
     status: 'Recebido',
     valor: 0,
+    valor_dut: 0,
+    valor_boleto: 0,
     prazo: '',
     observacoes: '',
     documentos_recebidos: []
@@ -149,9 +154,12 @@ export const NovoProcessoModal = ({ children }: NovoProcessoModalProps) => {
     setFormData({
       cliente_id: '',
       veiculo_id: '',
+      loja_id: '',
       servico: 'Transferência de Propriedade',
       status: 'Recebido',
       valor: 0,
+      valor_dut: 0,
+      valor_boleto: 0,
       prazo: '',
       observacoes: '',
       documentos_recebidos: []
@@ -332,6 +340,50 @@ export const NovoProcessoModal = ({ children }: NovoProcessoModalProps) => {
                   </Button>
                 </div>
               )}
+            </div>
+          </div>
+
+          {/* Loja de Origem */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <Label htmlFor="loja">Loja / Origem</Label>
+              <Select value={formData.loja_id || ''} onValueChange={(value) => setFormData(prev => ({ ...prev, loja_id: value || undefined }))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecionar loja (opcional)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Nenhuma</SelectItem>
+                  {lojas.filter(l => l.ativo).map((loja) => (
+                    <SelectItem key={loja.id} value={loja.id}>
+                      {loja.nome}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="valor_dut">Valor DUT (R$)</Label>
+              <Input
+                type="number"
+                step="0.01"
+                min="0"
+                placeholder="0,00"
+                value={formData.valor_dut || 0}
+                onChange={(e) => setFormData(prev => ({ ...prev, valor_dut: parseFloat(e.target.value) || 0 }))}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="valor_boleto">Valor Boleto (R$)</Label>
+              <Input
+                type="number"
+                step="0.01"
+                min="0"
+                placeholder="0,00"
+                value={formData.valor_boleto || 0}
+                onChange={(e) => setFormData(prev => ({ ...prev, valor_boleto: parseFloat(e.target.value) || 0 }))}
+              />
             </div>
           </div>
 

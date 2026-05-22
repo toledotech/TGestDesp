@@ -21,6 +21,7 @@ import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import Subscription from "./pages/Subscription";
 import PlansManagement from "./pages/PlansManagement";
+import Lojas from "./pages/Lojas";
 
 const queryClient = new QueryClient();
 
@@ -116,6 +117,13 @@ const App = () => (
               <ProtectedRoute>
                 <Layout>
                   <PlansManagement />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            <Route path="/lojas" element={
+              <ProtectedRoute>
+                <Layout>
+                  <Lojas />
                 </Layout>
               </ProtectedRoute>
             } />

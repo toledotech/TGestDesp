@@ -10,7 +10,8 @@ import {
   BarChart3,
   Bell,
   CreditCard,
-  Package
+  Package,
+  Store
 } from "lucide-react"
 import { NavLink } from "react-router-dom"
 import { usePermissions } from "@/hooks/usePermissions"
@@ -34,6 +35,7 @@ const allMenuItems: { title: string; url: string; icon: any; access: MenuAccess 
   { title: "Agenda",           url: "/agenda",       icon: Calendar,      access: 'all'        },
   { title: "Clientes",         url: "/clientes",     icon: Users,         access: 'all'        },
   { title: "Veículos",         url: "/veiculos",     icon: Car,           access: 'all'        },
+  { title: "Lojas",            url: "/lojas",        icon: Store,         access: 'admin'      },
   { title: "Financeiro",       url: "/financeiro",   icon: DollarSign,    access: 'admin'      },
   { title: "Prazos",           url: "/prazos",       icon: AlertTriangle, access: 'all'        },
   { title: "Relatórios",       url: "/relatorios",   icon: BarChart3,     access: 'admin'      },

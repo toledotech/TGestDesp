@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import { type Processo, type UpdateProcessoData, type ServicoTipo, type ProcessoStatus, useProcessos } from "@/hooks/useProcessos"
+import { useLojas } from "@/hooks/useLojas"
 
 const servicosOptions: ServicoTipo[] = [
   'Transferência de Propriedade',
@@ -35,13 +36,17 @@ interface EditarProcessoModalProps {
 export const EditarProcessoModal = ({ processo, open, onOpenChange }: EditarProcessoModalProps) => {
   const [loading, setLoading] = useState(false)
   const { updateProcesso, clientes, veiculos } = useProcessos()
+  const { lojas } = useLojas()
 
   const [formData, setFormData] = useState<UpdateProcessoData>({
     cliente_id: '',
     veiculo_id: '',
+    loja_id: '',
     servico: 'Transferência de Propriedade',
     status: 'Recebido',
     valor: 0,
+    valor_dut: 0,
+    valor_boleto: 0,
     prazo: '',
     observacoes: '',
     documentos_recebidos: []
@@ -63,9 +68,12 @@ export const EditarProcessoModal = ({ processo, open, onOpenChange }: EditarProc
       setFormData({
         cliente_id: processo.cliente_id,
         veiculo_id: processo.veiculo_id,
+        loja_id: processo.loja_id || '',
         servico: processo.servico,
         status: processo.status,
         valor: processo.valor,
+        valor_dut: processo.valor_dut || 0,
+        valor_boleto: processo.valor_boleto || 0,
         prazo: processo.prazo,
         observacoes: processo.observacoes || '',
         documentos_recebidos: processo.documentos_recebidos || []
@@ -143,6 +151,50 @@ export const EditarProcessoModal = ({ processo, open, onOpenChange }: EditarProc
                     ))}
                 </SelectContent>
               </Select>
+            </div>
+          </div>
+
+          {/* Loja / DUT / Boleto */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <Label>Loja / Origem</Label>
+              <Select value={formData.loja_id || ''} onValueChange={(value) => setFormData(prev => ({ ...prev, loja_id: value || undefined }))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecionar loja (opcional)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Nenhuma</SelectItem>
+                  {lojas.filter(l => l.ativo).map((loja) => (
+                    <SelectItem key={loja.id} value={loja.id}>
+                      {loja.nome}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label>Valor DUT (R$)</Label>
+              <Input
+                type="number"
+                step="0.01"
+                min="0"
+                placeholder="0,00"
+                value={formData.valor_dut || 0}
+                onChange={(e) => setFormData(prev => ({ ...prev, valor_dut: parseFloat(e.target.value) || 0 }))}
+              />
+            </div>
+
+            <div>
+              <Label>Valor Boleto (R$)</Label>
+              <Input
+                type="number"
+                step="0.01"
+                min="0"
+                placeholder="0,00"
+                value={formData.valor_boleto || 0}
+                onChange={(e) => setFormData(prev => ({ ...prev, valor_boleto: parseFloat(e.target.value) || 0 }))}
+              />
             </div>
           </div>
 

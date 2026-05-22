@@ -31,9 +31,12 @@ export interface Processo {
   numero_protocolo: string
   cliente_id: string
   veiculo_id: string
+  loja_id?: string
   servico: ServicoTipo
   status: ProcessoStatus
   valor: number
+  valor_dut: number
+  valor_boleto: number
   prazo: string
   observacoes?: string
   documentos_recebidos?: string[]
@@ -41,14 +44,18 @@ export interface Processo {
   updated_at: string
   cliente?: Cliente
   veiculo?: Veiculo
+  loja?: { id: string; nome: string }
 }
 
 export type CreateProcessoData = {
   cliente_id: string
   veiculo_id: string
+  loja_id?: string
   servico: ServicoTipo
   status?: ProcessoStatus
   valor: number
+  valor_dut?: number
+  valor_boleto?: number
   prazo: string
   observacoes?: string
   documentos_recebidos?: string[]
@@ -57,9 +64,12 @@ export type CreateProcessoData = {
 export type UpdateProcessoData = {
   cliente_id?: string
   veiculo_id?: string
+  loja_id?: string
   servico?: ServicoTipo
   status?: ProcessoStatus
   valor?: number
+  valor_dut?: number
+  valor_boleto?: number
   prazo?: string
   observacoes?: string
   documentos_recebidos?: string[]
@@ -80,7 +90,8 @@ export const useProcessos = () => {
         .select(`
           *,
           cliente:clientes(*),
-          veiculo:veiculos(*)
+          veiculo:veiculos(*),
+          loja:lojas(id, nome)
         `)
         .order('created_at', { ascending: false })
 
@@ -162,7 +173,8 @@ export const useProcessos = () => {
         .select(`
           *,
           cliente:clientes(*),
-          veiculo:veiculos(*)
+          veiculo:veiculos(*),
+          loja:lojas(id, nome)
         `)
         .single()
 
@@ -194,7 +206,8 @@ export const useProcessos = () => {
         .select(`
           *,
           cliente:clientes(*),
-          veiculo:veiculos(*)
+          veiculo:veiculos(*),
+          loja:lojas(id, nome)
         `)
         .single()
 

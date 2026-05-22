@@ -1,6 +1,8 @@
+import { useState } from "react"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "./AppSidebar"
-import { Bell, User, LogOut } from "lucide-react"
+import { Bell, User, LogOut, Settings } from "lucide-react"
+import { MeuPerfilModal } from "./MeuPerfilModal"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -22,6 +24,7 @@ export function Layout({ children }: LayoutProps) {
   const { user, signOut } = useAuth()
   const { unreadCount } = useNotifications()
   const { userProfile } = usePermissions()
+  const [perfilOpen, setPerfilOpen] = useState(false)
 
   const roleLabel: Record<string, string> = {
     super_admin: 'Super Admin',
@@ -85,6 +88,11 @@ export function Layout({ children }: LayoutProps) {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => setPerfilOpen(true)}>
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Meu Perfil</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout} className="text-red-600 focus:text-red-600">
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Sair</span>
@@ -100,6 +108,7 @@ export function Layout({ children }: LayoutProps) {
           </div>
         </main>
       </div>
+      <MeuPerfilModal open={perfilOpen} onOpenChange={setPerfilOpen} />
     </SidebarProvider>
   )
 }

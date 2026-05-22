@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { MoreHorizontal, Edit, Trash2, Eye } from "lucide-react"
+import { MoreHorizontal, Edit, Trash2, Eye, Store } from "lucide-react"
 import { type Processo } from "@/hooks/useProcessos"
 
 interface ProcessoCardProps {
@@ -127,7 +127,7 @@ export const ProcessoCard = ({
           {/* Informações do veículo */}
           <div className="space-y-1">
             <p className="text-xs text-muted-foreground">
-              {processo.veiculo ? 
+              {processo.veiculo ?
                 `${processo.veiculo.marca} ${processo.veiculo.modelo} - ${processo.veiculo.placa}` :
                 'Veículo não encontrado'
               }
@@ -135,6 +135,12 @@ export const ProcessoCard = ({
             <p className="text-sm font-medium text-primary">
               {processo.servico}
             </p>
+            {processo.loja && (
+              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                <Store className="h-3 w-3 shrink-0" />
+                <span className="truncate">{processo.loja.nome}</span>
+              </div>
+            )}
           </div>
 
           {/* Status badge */}
@@ -153,6 +159,22 @@ export const ProcessoCard = ({
               {formatDate(processo.prazo)}
             </span>
           </div>
+
+          {/* DUT / Boleto */}
+          {((processo.valor_dut ?? 0) > 0 || (processo.valor_boleto ?? 0) > 0) && (
+            <div className="flex gap-2 text-xs text-muted-foreground">
+              {(processo.valor_dut ?? 0) > 0 && (
+                <span className="bg-amber-50 text-amber-700 border border-amber-200 rounded px-1.5 py-0.5">
+                  DUT {formatCurrency(processo.valor_dut)}
+                </span>
+              )}
+              {(processo.valor_boleto ?? 0) > 0 && (
+                <span className="bg-blue-50 text-blue-700 border border-blue-200 rounded px-1.5 py-0.5">
+                  Boleto {formatCurrency(processo.valor_boleto)}
+                </span>
+              )}
+            </div>
+          )}
 
           {/* Documentos recebidos - indicador visual */}
           {processo.documentos_recebidos && processo.documentos_recebidos.length > 0 && (

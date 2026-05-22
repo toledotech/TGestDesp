@@ -66,11 +66,11 @@ interface NovoUsuarioModalProps {
 function NovoUsuarioModal({ open, onOpenChange, onCreated }: NovoUsuarioModalProps) {
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
-  const [form, setForm] = useState({ email: '', password: '', role: 'funcionario' })
+  const [form, setForm] = useState({ display_name: '', email: '', password: '', role: 'funcionario' })
   const { isSuperAdmin } = usePermissions()
 
   useEffect(() => {
-    if (open) setForm({ email: '', password: '', role: 'funcionario' })
+    if (open) setForm({ display_name: '', email: '', password: '', role: 'funcionario' })
   }, [open])
 
   const handleCreate = async () => {
@@ -84,12 +84,22 @@ function NovoUsuarioModal({ open, onOpenChange, onCreated }: NovoUsuarioModalPro
     }
     setLoading(true)
     try {
-      const { error } = await supabase.rpc('admin_create_user', {
+      const { data: newUserId, error } = await supabase.rpc('admin_create_user', {
         p_email:    form.email.trim().toLowerCase(),
         p_password: form.password,
         p_role:     form.role,
       })
       if (error) throw error
+
+      if (form.display_name.trim() && newUserId) {
+        await supabase.rpc('admin_update_user', {
+          target_user_id: newUserId,
+          p_display_name: form.display_name.trim(),
+          p_email:        form.email.trim().toLowerCase(),
+          p_role:         form.role,
+        })
+      }
+
       toast({ title: 'Usuário criado com sucesso!' })
       onOpenChange(false)
       onCreated()
@@ -111,6 +121,17 @@ function NovoUsuarioModal({ open, onOpenChange, onCreated }: NovoUsuarioModalPro
         </DialogHeader>
 
         <div className="space-y-4 py-2">
+          <div className="space-y-2">
+            <Label htmlFor="display_name">Nome completo</Label>
+            <Input
+              id="display_name"
+              type="text"
+              placeholder="Nome do usuário"
+              value={form.display_name}
+              onChange={e => setForm(p => ({ ...p, display_name: e.target.value }))}
+            />
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="email">E-mail *</Label>
             <Input
