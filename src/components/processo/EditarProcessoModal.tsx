@@ -158,12 +158,12 @@ export const EditarProcessoModal = ({ processo, open, onOpenChange }: EditarProc
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <Label>Loja / Origem</Label>
-              <Select value={formData.loja_id || ''} onValueChange={(value) => setFormData(prev => ({ ...prev, loja_id: value || undefined }))}>
+              <Select value={formData.loja_id || 'none'} onValueChange={(value) => setFormData(prev => ({ ...prev, loja_id: value === 'none' ? undefined : value }))}>
                 <SelectTrigger>
                   <SelectValue placeholder="Selecionar loja (opcional)" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Nenhuma</SelectItem>
+                  <SelectItem value="none">Nenhuma</SelectItem>
                   {lojas.filter(l => l.ativo).map((loja) => (
                     <SelectItem key={loja.id} value={loja.id}>
                       {loja.nome}
