@@ -24,7 +24,9 @@ export function Layout({ children }: LayoutProps) {
   const { userProfile } = usePermissions()
 
   const roleLabel: Record<string, string> = {
+    super_admin: 'Super Admin',
     admin: 'Administrador',
+    funcionario: 'Funcionário',
     gerente: 'Gerente',
     usuario: 'Usuário',
   }

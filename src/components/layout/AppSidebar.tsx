@@ -15,6 +15,8 @@ import {
 import { NavLink } from "react-router-dom"
 import { usePermissions } from "@/hooks/usePermissions"
 
+type MenuAccess = 'all' | 'admin' | 'super_admin'
+
 import {
   Sidebar,
   SidebarContent,
@@ -26,27 +28,31 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 
-const allMenuItems = [
-  { title: "Dashboard",        url: "/",             icon: Home,          adminOnly: false },
-  { title: "Processos",        url: "/processos",    icon: FileText,      adminOnly: false },
-  { title: "Agenda",           url: "/agenda",       icon: Calendar,      adminOnly: false },
-  { title: "Clientes",         url: "/clientes",     icon: Users,         adminOnly: false },
-  { title: "Veículos",         url: "/veiculos",     icon: Car,           adminOnly: false },
-  { title: "Financeiro",       url: "/financeiro",   icon: DollarSign,    adminOnly: false },
-  { title: "Prazos",           url: "/prazos",       icon: AlertTriangle, adminOnly: false },
-  { title: "Relatórios",       url: "/relatorios",   icon: BarChart3,     adminOnly: false },
-  { title: "Notificações",     url: "/notifications",icon: Bell,          adminOnly: false },
-  { title: "Assinatura",       url: "/assinatura",   icon: CreditCard,    adminOnly: false },
-  { title: "Gerenciar Planos", url: "/planos",       icon: Package,       adminOnly: true  },
-  { title: "Configurações",    url: "/configuracoes",icon: Settings,      adminOnly: false },
+const allMenuItems: { title: string; url: string; icon: any; access: MenuAccess }[] = [
+  { title: "Dashboard",        url: "/",             icon: Home,          access: 'all'        },
+  { title: "Processos",        url: "/processos",    icon: FileText,      access: 'all'        },
+  { title: "Agenda",           url: "/agenda",       icon: Calendar,      access: 'all'        },
+  { title: "Clientes",         url: "/clientes",     icon: Users,         access: 'all'        },
+  { title: "Veículos",         url: "/veiculos",     icon: Car,           access: 'all'        },
+  { title: "Financeiro",       url: "/financeiro",   icon: DollarSign,    access: 'admin'      },
+  { title: "Prazos",           url: "/prazos",       icon: AlertTriangle, access: 'all'        },
+  { title: "Relatórios",       url: "/relatorios",   icon: BarChart3,     access: 'admin'      },
+  { title: "Notificações",     url: "/notifications",icon: Bell,          access: 'all'        },
+  { title: "Assinatura",       url: "/assinatura",   icon: CreditCard,    access: 'admin'      },
+  { title: "Gerenciar Planos", url: "/planos",       icon: Package,       access: 'super_admin'},
+  { title: "Configurações",    url: "/configuracoes",icon: Settings,      access: 'admin'      },
 ]
 
 export function AppSidebar() {
   const { state } = useSidebar()
   const isCollapsed = state === "collapsed"
-  const { isAdmin } = usePermissions()
+  const { isAdmin, isSuperAdmin } = usePermissions()
 
-  const menuItems = allMenuItems.filter(item => !item.adminOnly || isAdmin())
+  const menuItems = allMenuItems.filter(item => {
+    if (item.access === 'super_admin') return isSuperAdmin()
+    if (item.access === 'admin') return isAdmin()
+    return true
+  })
 
   return (
     <Sidebar collapsible="icon" className="border-r border-blue-800">

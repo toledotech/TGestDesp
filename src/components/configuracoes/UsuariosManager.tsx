@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Users, Shield, Crown, User, UserPlus, Ban, CheckCircle, RefreshCw, Pencil } from 'lucide-react'
+import { usePermissions } from '@/hooks/usePermissions'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 
@@ -25,15 +26,19 @@ interface UsuarioSistema {
 }
 
 const ROLE_LABELS: Record<string, string> = {
-  admin:   'Administrador',
-  gerente: 'Gerente',
-  usuario: 'Usuário',
+  super_admin: 'Super Admin',
+  admin:       'Administrador',
+  funcionario: 'Funcionário',
+  gerente:     'Gerente',
+  usuario:     'Usuário',
 }
 
 const ROLE_BADGE: Record<string, string> = {
-  admin:   'bg-red-100 text-red-700 border-red-200',
-  gerente: 'bg-blue-100 text-blue-700 border-blue-200',
-  usuario: 'bg-gray-100 text-gray-600 border-gray-200',
+  super_admin: 'bg-purple-100 text-purple-700 border-purple-200',
+  admin:       'bg-red-100 text-red-700 border-red-200',
+  funcionario: 'bg-blue-100 text-blue-700 border-blue-200',
+  gerente:     'bg-indigo-100 text-indigo-700 border-indigo-200',
+  usuario:     'bg-gray-100 text-gray-600 border-gray-200',
 }
 
 const PLAN_BADGE: Record<string, string> = {
@@ -45,9 +50,9 @@ const PLAN_BADGE: Record<string, string> = {
 }
 
 function RoleIcon({ role }: { role: string }) {
-  if (role === 'admin')   return <Shield className="h-4 w-4 text-red-600" />
-  if (role === 'gerente') return <Crown className="h-4 w-4 text-blue-600" />
-  return <User className="h-4 w-4 text-gray-500" />
+  if (role === 'super_admin') return <Crown className="h-4 w-4 text-purple-600" />
+  if (role === 'admin')       return <Shield className="h-4 w-4 text-red-600" />
+  return <User className="h-4 w-4 text-blue-500" />
 }
 
 // ─── Modal Novo Usuário ───────────────────────────────────────────────────────
@@ -61,10 +66,11 @@ interface NovoUsuarioModalProps {
 function NovoUsuarioModal({ open, onOpenChange, onCreated }: NovoUsuarioModalProps) {
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
-  const [form, setForm] = useState({ email: '', password: '', role: 'usuario' })
+  const [form, setForm] = useState({ email: '', password: '', role: 'funcionario' })
+  const { isSuperAdmin } = usePermissions()
 
   useEffect(() => {
-    if (open) setForm({ email: '', password: '', role: 'usuario' })
+    if (open) setForm({ email: '', password: '', role: 'funcionario' })
   }, [open])
 
   const handleCreate = async () => {
@@ -137,9 +143,8 @@ function NovoUsuarioModal({ open, onOpenChange, onCreated }: NovoUsuarioModalPro
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="usuario">Usuário</SelectItem>
-                <SelectItem value="gerente">Gerente</SelectItem>
-                <SelectItem value="admin">Administrador</SelectItem>
+                <SelectItem value="funcionario">Funcionário</SelectItem>
+                {isSuperAdmin() && <SelectItem value="admin">Administrador</SelectItem>}
               </SelectContent>
             </Select>
           </div>
@@ -170,7 +175,8 @@ interface EditarUsuarioModalProps {
 function EditarUsuarioModal({ open, onOpenChange, usuario, onSaved }: EditarUsuarioModalProps) {
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
-  const [form, setForm] = useState({ display_name: '', email: '', role: 'usuario' })
+  const [form, setForm] = useState({ display_name: '', email: '', role: 'funcionario' })
+  const { isSuperAdmin } = usePermissions()
 
   useEffect(() => {
     if (usuario) {
@@ -246,9 +252,9 @@ function EditarUsuarioModal({ open, onOpenChange, usuario, onSaved }: EditarUsua
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="usuario">Usuário</SelectItem>
-                <SelectItem value="gerente">Gerente</SelectItem>
-                <SelectItem value="admin">Administrador</SelectItem>
+                <SelectItem value="funcionario">Funcionário</SelectItem>
+                {isSuperAdmin() && <SelectItem value="admin">Administrador</SelectItem>}
+                {isSuperAdmin() && <SelectItem value="super_admin">Super Admin</SelectItem>}
               </SelectContent>
             </Select>
           </div>
@@ -449,9 +455,9 @@ export function UsuariosManager() {
 
       {/* Legenda papéis */}
       <div className="text-xs text-muted-foreground space-y-1 px-1">
-        <p><span className="font-medium text-red-600">Administrador</span> — acesso total, incluindo esta tela.</p>
-        <p><span className="font-medium text-blue-600">Gerente</span> — pode criar e editar dados, mas não excluir nem configurar.</p>
-        <p><span className="font-medium">Usuário</span> — acesso somente leitura à maioria dos módulos.</p>
+        <p><span className="font-medium text-purple-600">Super Admin</span> — acesso total ao sistema, incluindo planos e todos os clientes.</p>
+        <p><span className="font-medium text-red-600">Administrador</span> — acesso total ao próprio negócio, pode gerenciar funcionários.</p>
+        <p><span className="font-medium text-blue-600">Funcionário</span> — acesso restrito a lançamentos: processos, clientes e agenda.</p>
       </div>
 
       {/* Modal criar usuário */}

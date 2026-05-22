@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client'
 import { useAuth } from '@/hooks/useAuth'
 import { useToast } from '@/hooks/use-toast'
 
-export type UserRole = 'admin' | 'gerente' | 'usuario'
+export type UserRole = 'super_admin' | 'admin' | 'funcionario' | 'gerente' | 'usuario'
 
 export interface Permissions {
   processos: {
@@ -48,12 +48,26 @@ export const usePermissions = () => {
   const { toast } = useToast()
 
   const defaultPermissions: Record<UserRole, Permissions> = {
+    super_admin: {
+      processos: { read: true, write: true, delete: true },
+      clientes: { read: true, write: true, delete: true },
+      financeiro: { read: true, write: true, delete: true },
+      relatorios: { read: true, write: true, delete: true },
+      configuracoes: { read: true, write: true, delete: true }
+    },
     admin: {
       processos: { read: true, write: true, delete: true },
       clientes: { read: true, write: true, delete: true },
       financeiro: { read: true, write: true, delete: true },
       relatorios: { read: true, write: true, delete: true },
       configuracoes: { read: true, write: true, delete: true }
+    },
+    funcionario: {
+      processos: { read: true, write: true, delete: false },
+      clientes: { read: true, write: true, delete: false },
+      financeiro: { read: false, write: true, delete: false },
+      relatorios: { read: false, write: false, delete: false },
+      configuracoes: { read: false, write: false, delete: false }
     },
     gerente: {
       processos: { read: true, write: true, delete: false },
@@ -203,8 +217,9 @@ export const usePermissions = () => {
     return userProfile.permissions[module][action] === true
   }
 
-  const isAdmin = () => userProfile?.role === 'admin'
-  const isGerente = () => userProfile?.role === 'gerente' || userProfile?.role === 'admin'
+  const isSuperAdmin = () => userProfile?.role === 'super_admin'
+  const isAdmin = () => userProfile?.role === 'super_admin' || userProfile?.role === 'admin'
+  const isGerente = () => isAdmin() || userProfile?.role === 'gerente'
 
   useEffect(() => {
     fetchUserProfile()
@@ -214,6 +229,7 @@ export const usePermissions = () => {
     userProfile,
     loading,
     hasPermission,
+    isSuperAdmin,
     isAdmin,
     isGerente,
     updateUserRole,
