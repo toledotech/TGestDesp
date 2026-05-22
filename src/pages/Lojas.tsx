@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Store, Plus, Search, Pencil, Trash2, Phone, Mail, User, CheckCircle, XCircle, Building2 } from 'lucide-react'
+import { Store, Plus, Search, Pencil, Trash2, Phone, Mail, User, CheckCircle, XCircle, Building2, Wallet } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -12,6 +12,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useLojas, Loja, LojaFormData, TIPOS_LOJA } from '@/hooks/useLojas'
+import { useSaldosLojas } from '@/hooks/useCreditosLoja'
+import { CreditosLojaModal } from '@/components/lojas/CreditosLojaModal'
 
 const TIPO_BADGE: Record<string, string> = {
   'Concessionária':       'bg-blue-100 text-blue-700 border-blue-200',
@@ -125,9 +127,11 @@ function LojaModal({ open, onOpenChange, loja, onSave }: LojaModalProps) {
 // ─── Página principal ─────────────────────────────────────────────────────────
 export default function Lojas() {
   const { lojas, loading, searchTerm, setSearchTerm, criarLoja, atualizarLoja, excluirLoja } = useLojas()
+  const { saldos } = useSaldosLojas()
   const [modalOpen, setModalOpen] = useState(false)
   const [editLoja, setEditLoja] = useState<Loja | null>(null)
   const [deleteDialog, setDeleteDialog] = useState<Loja | null>(null)
+  const [creditosLoja, setCreditosLoja] = useState<Loja | null>(null)
 
   const ativas   = lojas.filter(l => l.ativo)
   const inativas = lojas.filter(l => !l.ativo)
@@ -242,10 +246,29 @@ export default function Lojas() {
                 </div>
 
                 <div className="flex items-center justify-between mt-3 pt-3 border-t">
-                  <span className="text-xs text-muted-foreground">
-                    {loja.total_processos ?? 0} processo{(loja.total_processos ?? 0) !== 1 ? 's' : ''}
-                  </span>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-xs text-muted-foreground">
+                      {loja.total_processos ?? 0} processo{(loja.total_processos ?? 0) !== 1 ? 's' : ''}
+                    </span>
+                    {saldos[loja.id] !== undefined && saldos[loja.id] !== 0 && (
+                      <span className={`text-xs font-semibold ${
+                        saldos[loja.id] > 0 ? 'text-red-600' : 'text-green-600'
+                      }`}>
+                        {saldos[loja.id] > 0
+                          ? `Deve ${saldos[loja.id].toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`
+                          : `A receber ${Math.abs(saldos[loja.id]).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`
+                        }
+                      </span>
+                    )}
+                  </div>
                   <div className="flex gap-1">
+                    <Button
+                      variant="ghost" size="icon" className="h-7 w-7 text-blue-500 hover:text-blue-600 hover:bg-blue-50"
+                      onClick={() => setCreditosLoja(loja)}
+                      title="Créditos / Débitos"
+                    >
+                      <Wallet className="h-3.5 w-3.5" />
+                    </Button>
                     <Button
                       variant="ghost" size="icon" className="h-7 w-7"
                       onClick={() => { setEditLoja(loja); setModalOpen(true) }}
@@ -273,6 +296,15 @@ export default function Lojas() {
         loja={editLoja}
         onSave={dados => editLoja ? atualizarLoja(editLoja.id, dados) : criarLoja(dados)}
       />
+
+      {/* Modal créditos */}
+      {creditosLoja && (
+        <CreditosLojaModal
+          open={!!creditosLoja}
+          onOpenChange={o => !o && setCreditosLoja(null)}
+          loja={creditosLoja}
+        />
+      )}
 
       {/* Dialog excluir */}
       <AlertDialog open={!!deleteDialog} onOpenChange={o => !o && setDeleteDialog(null)}>
