@@ -11,7 +11,8 @@ import {
   Bell,
   CreditCard,
   Package,
-  Store
+  Store,
+  BookOpen
 } from "lucide-react"
 import { NavLink } from "react-router-dom"
 import { usePermissions } from "@/hooks/usePermissions"
@@ -98,6 +99,23 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {/* Botão do Manual */}
+        <div className={`px-3 pb-6 mt-auto ${isCollapsed ? 'flex justify-center' : ''}`}>
+          <a
+            href="/manual.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-blue-300 hover:bg-white/20 hover:text-cyan-300 w-full"
+          >
+            <div className="p-1.5 shrink-0">
+              <BookOpen className="h-4 w-4 text-white" />
+            </div>
+            {!isCollapsed && (
+              <span className="font-medium text-sm">Manual do Sistema</span>
+            )}
+          </a>
+        </div>
       </SidebarContent>
     </Sidebar>
   )
