@@ -11,6 +11,7 @@ import { useLojas } from "@/hooks/useLojas"
 
 const servicosOptions: ServicoTipo[] = [
   'Transferência de Propriedade',
+  'ATPV (Intenção de Venda)',
   'Licenciamento Anual',
   '2ª Via CRV',
   'Comunicação de Venda',
@@ -42,6 +43,8 @@ export const EditarProcessoModal = ({ processo, open, onOpenChange }: EditarProc
     cliente_id: '',
     veiculo_id: '',
     loja_id: '',
+    numero_processo: '',
+    data_abertura: '',
     servico: 'Transferência de Propriedade',
     status: 'Recebido',
     valor: 0,
@@ -69,12 +72,14 @@ export const EditarProcessoModal = ({ processo, open, onOpenChange }: EditarProc
         cliente_id: processo.cliente_id,
         veiculo_id: processo.veiculo_id,
         loja_id: processo.loja_id || '',
+        numero_processo: processo.numero_processo || '',
+        data_abertura: processo.data_abertura || '',
         servico: processo.servico,
         status: processo.status,
         valor: processo.valor,
         valor_dut: processo.valor_dut || 0,
         valor_boleto: processo.valor_boleto || 0,
-        prazo: processo.prazo,
+        prazo: processo.prazo || '',
         observacoes: processo.observacoes || '',
         documentos_recebidos: processo.documentos_recebidos || []
       })
@@ -154,6 +159,26 @@ export const EditarProcessoModal = ({ processo, open, onOpenChange }: EditarProc
             </div>
           </div>
 
+          {/* Número do Processo e Data de Abertura */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label>Número do Processo</Label>
+              <Input
+                placeholder="Ex: 2025/001234"
+                value={formData.numero_processo || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, numero_processo: e.target.value }))}
+              />
+            </div>
+            <div>
+              <Label>Data de Abertura</Label>
+              <Input
+                type="date"
+                value={formData.data_abertura || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, data_abertura: e.target.value }))}
+              />
+            </div>
+          </div>
+
           {/* Loja / DUT / Boleto */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
@@ -174,7 +199,7 @@ export const EditarProcessoModal = ({ processo, open, onOpenChange }: EditarProc
             </div>
 
             <div>
-              <Label>Valor DUT (R$)</Label>
+              <Label>Taxas Detran (R$)</Label>
               <Input
                 type="number"
                 step="0.01"

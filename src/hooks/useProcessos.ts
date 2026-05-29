@@ -23,12 +23,14 @@ export interface Veiculo {
   renavam?: string
 }
 
-export type ServicoTipo = 'Transferência de Propriedade' | 'Licenciamento Anual' | '2ª Via CRV' | 'Comunicação de Venda' | 'IPVA' | 'Multas' | 'Outros'
+export type ServicoTipo = 'Transferência de Propriedade' | 'Licenciamento Anual' | '2ª Via CRV' | 'Comunicação de Venda' | 'ATPV (Intenção de Venda)' | 'IPVA' | 'Multas' | 'Outros'
 export type ProcessoStatus = 'Recebido' | 'Em Conferência' | 'No DETRAN' | 'Aguardando Pagamento' | 'Concluído'
 
 export interface Processo {
   id: string
   numero_protocolo: string
+  numero_processo?: string
+  data_abertura?: string
   cliente_id: string
   veiculo_id: string
   loja_id?: string
@@ -37,7 +39,7 @@ export interface Processo {
   valor: number
   valor_dut: number
   valor_boleto: number
-  prazo: string
+  prazo?: string
   observacoes?: string
   documentos_recebidos?: string[]
   created_at: string
@@ -51,12 +53,14 @@ export type CreateProcessoData = {
   cliente_id: string
   veiculo_id: string
   loja_id?: string
+  numero_processo?: string
+  data_abertura?: string
   servico: ServicoTipo
   status?: ProcessoStatus
   valor: number
   valor_dut?: number
   valor_boleto?: number
-  prazo: string
+  prazo?: string
   observacoes?: string
   documentos_recebidos?: string[]
 }
@@ -65,6 +69,8 @@ export type UpdateProcessoData = {
   cliente_id?: string
   veiculo_id?: string
   loja_id?: string
+  numero_processo?: string
+  data_abertura?: string
   servico?: ServicoTipo
   status?: ProcessoStatus
   valor?: number

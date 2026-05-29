@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast"
 
 const servicosOptions: ServicoTipo[] = [
   'Transferência de Propriedade',
+  'ATPV (Intenção de Venda)',
   'Licenciamento Anual',
   '2ª Via CRV',
   'Comunicação de Venda',
@@ -47,6 +48,8 @@ export const NovoProcessoModal = ({ children }: NovoProcessoModalProps) => {
     cliente_id: '',
     veiculo_id: '',
     loja_id: '',
+    numero_processo: '',
+    data_abertura: new Date().toISOString().split('T')[0],
     servico: 'Transferência de Propriedade',
     status: 'Recebido',
     valor: 0,
@@ -88,7 +91,7 @@ export const NovoProcessoModal = ({ children }: NovoProcessoModalProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!formData.cliente_id || !formData.veiculo_id || !formData.prazo) {
+    if (!formData.cliente_id || !formData.veiculo_id) {
       toast({
         title: "Erro",
         description: "Preencha todos os campos obrigatórios.",
@@ -155,6 +158,8 @@ export const NovoProcessoModal = ({ children }: NovoProcessoModalProps) => {
       cliente_id: '',
       veiculo_id: '',
       loja_id: '',
+      numero_processo: '',
+      data_abertura: new Date().toISOString().split('T')[0],
       servico: 'Transferência de Propriedade',
       status: 'Recebido',
       valor: 0,
@@ -343,6 +348,28 @@ export const NovoProcessoModal = ({ children }: NovoProcessoModalProps) => {
             </div>
           </div>
 
+          {/* Número do Processo e Data de Abertura */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="numero_processo">Número do Processo</Label>
+              <Input
+                id="numero_processo"
+                placeholder="Ex: 2025/001234"
+                value={formData.numero_processo || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, numero_processo: e.target.value }))}
+              />
+            </div>
+            <div>
+              <Label htmlFor="data_abertura">Data de Abertura</Label>
+              <Input
+                id="data_abertura"
+                type="date"
+                value={formData.data_abertura || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, data_abertura: e.target.value }))}
+              />
+            </div>
+          </div>
+
           {/* Loja de Origem */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
@@ -363,7 +390,7 @@ export const NovoProcessoModal = ({ children }: NovoProcessoModalProps) => {
             </div>
 
             <div>
-              <Label htmlFor="valor_dut">Valor DUT (R$)</Label>
+              <Label htmlFor="valor_dut">Taxas Detran (R$)</Label>
               <Input
                 type="number"
                 step="0.01"
@@ -434,10 +461,10 @@ export const NovoProcessoModal = ({ children }: NovoProcessoModalProps) => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="prazo">Prazo *</Label>
+              <Label htmlFor="prazo">Prazo</Label>
               <Input
                 type="date"
-                value={formData.prazo}
+                value={formData.prazo || ''}
                 onChange={(e) => setFormData(prev => ({ ...prev, prazo: e.target.value }))}
               />
             </div>
