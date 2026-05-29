@@ -27,8 +27,12 @@ export function ClienteModal({
     cpf_cnpj: '',
     email: '',
     telefone: '',
-    endereco: ''
+    endereco: '',
+    cep: '',
+    cidade: '',
+    uf: '',
   })
+  const [buscandoCep, setBuscandoCep] = useState(false)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -38,7 +42,10 @@ export function ClienteModal({
         cpf_cnpj: cliente.cpf_cnpj || '',
         email: cliente.email || '',
         telefone: cliente.telefone || '',
-        endereco: cliente.endereco || ''
+        endereco: cliente.endereco || '',
+        cep: cliente.cep || '',
+        cidade: cliente.cidade || '',
+        uf: cliente.uf || '',
       })
     } else {
       setFormData({
@@ -46,7 +53,10 @@ export function ClienteModal({
         cpf_cnpj: '',
         email: '',
         telefone: '',
-        endereco: ''
+        endereco: '',
+        cep: '',
+        cidade: '',
+        uf: '',
       })
     }
   }, [cliente, mode, open])
@@ -109,9 +119,41 @@ export function ClienteModal({
     }
   }
 
+  const formatCep = (value: string) => {
+    const numbers = value.replace(/\D/g, '').slice(0, 8)
+    if (numbers.length > 5) return numbers.slice(0, 5) + '-' + numbers.slice(5)
+    return numbers
+  }
+
+  const handleCepChange = async (value: string) => {
+    const formatted = formatCep(value)
+    setFormData(prev => ({ ...prev, cep: formatted }))
+
+    const digits = formatted.replace(/\D/g, '')
+    if (digits.length === 8) {
+      setBuscandoCep(true)
+      try {
+        const res = await fetch(`https://viacep.com.br/ws/${digits}/json/`)
+        const data = await res.json()
+        if (!data.erro) {
+          setFormData(prev => ({
+            ...prev,
+            endereco: data.logradouro ? `${data.logradouro}, ${data.bairro}` : prev.endereco,
+            cidade: data.localidade || prev.cidade,
+            uf: data.uf || prev.uf,
+          }))
+        }
+      } catch {
+        // silencia erro de busca de CEP
+      } finally {
+        setBuscandoCep(false)
+      }
+    }
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>
             {mode === 'create' ? 'Novo Cliente' : 'Editar Cliente'}
@@ -162,14 +204,47 @@ export function ClienteModal({
           </div>
 
           <div>
+            <Label htmlFor="cep">CEP {buscandoCep && <span className="text-xs text-muted-foreground ml-1">buscando...</span>}</Label>
+            <Input
+              id="cep"
+              value={formData.cep}
+              onChange={(e) => handleCepChange(e.target.value)}
+              placeholder="00000-000"
+              maxLength={9}
+            />
+          </div>
+
+          <div>
             <Label htmlFor="endereco">Endereço</Label>
             <Textarea
               id="endereco"
               value={formData.endereco}
               onChange={(e) => setFormData(prev => ({ ...prev, endereco: e.target.value }))}
               placeholder="Endereço completo do cliente"
-              rows={3}
+              rows={2}
             />
+          </div>
+
+          <div className="grid grid-cols-3 gap-3">
+            <div className="col-span-2">
+              <Label htmlFor="cidade">Cidade</Label>
+              <Input
+                id="cidade"
+                value={formData.cidade}
+                onChange={(e) => setFormData(prev => ({ ...prev, cidade: e.target.value }))}
+                placeholder="Cidade"
+              />
+            </div>
+            <div>
+              <Label htmlFor="uf">UF</Label>
+              <Input
+                id="uf"
+                value={formData.uf}
+                onChange={(e) => setFormData(prev => ({ ...prev, uf: e.target.value.toUpperCase().slice(0, 2) }))}
+                placeholder="GO"
+                maxLength={2}
+              />
+            </div>
           </div>
         </div>
 

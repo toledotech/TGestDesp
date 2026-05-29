@@ -9,6 +9,9 @@ export interface Cliente {
   email?: string
   telefone?: string
   endereco?: string
+  cep?: string
+  cidade?: string
+  uf?: string
   user_id: string
   created_at: string
   updated_at: string
@@ -20,6 +23,9 @@ export interface CreateClienteData {
   email?: string
   telefone?: string
   endereco?: string
+  cep?: string
+  cidade?: string
+  uf?: string
 }
 
 export interface UpdateClienteData extends CreateClienteData {
@@ -95,6 +101,9 @@ export function useClientes() {
           email: clienteData.email,
           telefone: clienteData.telefone,
           endereco: clienteData.endereco,
+          cep: clienteData.cep,
+          cidade: clienteData.cidade,
+          uf: clienteData.uf,
         })
         .eq('id', clienteData.id)
         .select()
