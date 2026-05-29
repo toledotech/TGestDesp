@@ -186,6 +186,29 @@ export const useProcessos = () => {
 
       if (error) throw error
 
+      // Lançar receita pendente automaticamente no financeiro
+      if (data.valor > 0) {
+        const veiculo = veiculos.find(v => v.id === processoData.veiculo_id)
+        const cliente = clientes.find(c => c.id === processoData.cliente_id)
+        const descricao = [
+          processoData.servico,
+          cliente?.nome,
+          veiculo ? `${veiculo.marca} ${veiculo.modelo} - ${veiculo.placa}` : null,
+        ].filter(Boolean).join(' | ')
+
+        await supabase.from('transacoes_financeiras').insert([{
+          tipo: 'receita',
+          categoria: 'Serviços Prestados',
+          descricao,
+          valor: data.valor,
+          data_transacao: processoData.data_abertura || new Date().toISOString().split('T')[0],
+          processo_id: data.id,
+          cliente_id: processoData.cliente_id,
+          status: 'pendente',
+          user_id: user.id,
+        }])
+      }
+
       setProcessos(prev => [data, ...prev])
       toast({
         title: "Sucesso",
