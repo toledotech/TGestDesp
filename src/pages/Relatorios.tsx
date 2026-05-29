@@ -15,6 +15,7 @@ import { ReceitasDespesasTable } from "@/components/relatorios/ReceitasDespesasT
 import { FluxoCaixaChart } from "@/components/relatorios/FluxoCaixaChart"
 import { FluxoCaixaTable } from "@/components/relatorios/FluxoCaixaTable"
 import { ProcessosLojaTable } from "@/components/relatorios/ProcessosLojaTable"
+import { RelatorioDetalhadoTable } from "@/components/relatorios/RelatorioDetalhadoTable"
 import { useRelatorios } from "@/hooks/useRelatorios"
 import { usePlanLimits } from "@/hooks/usePlanLimits"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -105,7 +106,7 @@ const Relatorios = () => {
         </div>
       ) : (
         <Tabs defaultValue="periodo" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-8">
+          <TabsList className="grid w-full grid-cols-9">
             {/* ── Abas básicas (todos os planos) ── */}
             <TabsTrigger value="periodo">Por Período</TabsTrigger>
             <TabsTrigger value="status">Por Status</TabsTrigger>
@@ -113,6 +114,9 @@ const Relatorios = () => {
             <TabsTrigger value="servico">Por Serviço</TabsTrigger>
             <TabsTrigger value="prazos">Prazos</TabsTrigger>
             <TabsTrigger value="loja">Por Loja</TabsTrigger>
+
+            {/* ── Aba Detalhado (todos os planos) ── */}
+            <TabsTrigger value="detalhado">Detalhado</TabsTrigger>
 
             {/* ── Aba Fluxo de Caixa (Básico+) ── */}
             <TabsTrigger value="fluxo" className="gap-1">
@@ -156,6 +160,11 @@ const Relatorios = () => {
           {/* ── Por Loja — todos os planos ── */}
           <TabsContent value="loja" className="space-y-6">
             <ProcessosLojaTable filtros={filtros} />
+          </TabsContent>
+
+          {/* ── Detalhado — todos os planos ── */}
+          <TabsContent value="detalhado" className="space-y-6">
+            <RelatorioDetalhadoTable filtros={filtros} />
           </TabsContent>
 
           {/* ── Fluxo de Caixa — Básico ou superior ── */}
