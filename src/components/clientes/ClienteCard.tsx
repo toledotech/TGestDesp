@@ -1,10 +1,12 @@
+import { useState } from "react"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Edit, Trash2, User, Mail, Phone, MapPin } from "lucide-react"
+import { Edit, Trash2, User, Mail, Phone, MapPin, Car } from "lucide-react"
 import { Cliente } from "@/hooks/useClientes"
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
+import { ClienteVeiculosModal } from "@/components/clientes/ClienteVeiculosModal"
 
 interface ClienteCardProps {
   cliente: Cliente
@@ -13,6 +15,7 @@ interface ClienteCardProps {
 }
 
 export function ClienteCard({ cliente, onEdit, onDelete }: ClienteCardProps) {
+  const [veiculosOpen, setVeiculosOpen] = useState(false)
   const formatCpfCnpj = (cpfCnpj?: string) => {
     if (!cpfCnpj) return ''
     
@@ -106,11 +109,18 @@ export function ClienteCard({ cliente, onEdit, onDelete }: ClienteCardProps) {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => onEdit(cliente)}
-            className="flex-1"
+            onClick={() => setVeiculosOpen(true)}
+            className="flex-1 gap-1"
           >
-            <Edit className="h-4 w-4 mr-1" />
-            Editar
+            <Car className="h-4 w-4" />
+            Veículos
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onEdit(cliente)}
+          >
+            <Edit className="h-4 w-4" />
           </Button>
           <Button
             variant="outline"
@@ -121,6 +131,12 @@ export function ClienteCard({ cliente, onEdit, onDelete }: ClienteCardProps) {
             <Trash2 className="h-4 w-4" />
           </Button>
         </div>
+
+        <ClienteVeiculosModal
+          cliente={cliente}
+          open={veiculosOpen}
+          onOpenChange={setVeiculosOpen}
+        />
       </CardContent>
     </Card>
   )
