@@ -78,16 +78,30 @@ export const NovoProcessoModal = ({ children }: NovoProcessoModalProps) => {
     renavam: ''
   })
 
-  const documentosDisponiveis = [
-    'RG/CPF do proprietário',
-    'CNH válida',
-    'Comprovante de residência',
+  const [tipoPessoa, setTipoPessoa] = useState<'fisica' | 'juridica'>('fisica')
+
+  const documentosPF = [
+    'RG/CPF ou CNH do proprietário',
+    'Comprovante de residência / Declaração de endereço',
     'CRLV anterior',
-    'Nota fiscal/DUT',
-    'Seguro obrigatório',
-    'Comprovante de pagamento IPVA',
-    'Comprovante de pagamento multas'
+    'Nota fiscal/ATPV',
+    'Vistoria ECV',
+    'Procuração Despachante',
+    'Procuração Particular/pública',
   ]
+
+  const documentosPJ = [
+    'Contrato Social',
+    'Cartão CNPJ',
+    'RG/CPF ou CNH do responsável legal',
+    'CRLV anterior',
+    'Nota fiscal/ATPV',
+    'Vistoria ECV',
+    'Procuração Despachante',
+    'Procuração Particular/pública',
+  ]
+
+  const documentosDisponiveis = tipoPessoa === 'fisica' ? documentosPF : documentosPJ
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -481,8 +495,26 @@ export const NovoProcessoModal = ({ children }: NovoProcessoModalProps) => {
 
           {/* Documentos Recebidos */}
           <div>
-            <Label>Documentos Recebidos</Label>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
+            <div className="flex items-center justify-between mb-2">
+              <Label>Documentos Recebidos</Label>
+              <div className="flex rounded-md border overflow-hidden text-xs">
+                <button
+                  type="button"
+                  onClick={() => { setTipoPessoa('fisica'); setFormData(prev => ({ ...prev, documentos_recebidos: [] })) }}
+                  className={`px-3 py-1 transition-colors ${tipoPessoa === 'fisica' ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'}`}
+                >
+                  Pessoa Física
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setTipoPessoa('juridica'); setFormData(prev => ({ ...prev, documentos_recebidos: [] })) }}
+                  className={`px-3 py-1 transition-colors ${tipoPessoa === 'juridica' ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'}`}
+                >
+                  Pessoa Jurídica
+                </button>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
               {documentosDisponiveis.map((documento) => (
                 <div key={documento} className="flex items-center space-x-2">
                   <Checkbox
@@ -490,7 +522,7 @@ export const NovoProcessoModal = ({ children }: NovoProcessoModalProps) => {
                     checked={(formData.documentos_recebidos || []).includes(documento)}
                     onCheckedChange={(checked) => handleDocumentoChange(documento, checked as boolean)}
                   />
-                  <Label htmlFor={documento} className="text-sm">
+                  <Label htmlFor={documento} className="text-sm leading-tight">
                     {documento}
                   </Label>
                 </div>
