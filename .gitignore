@@ -25,3 +25,8 @@ dist-ssr
 
 # Claude Code (contém tokens)
 .claude/
+
+# Local files
+public/analise-concorrentes.html
+supabase/.temp/
+
