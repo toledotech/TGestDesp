@@ -29,4 +29,5 @@ npm run dev
 
 ## Acesso
 
-**Produção:** https://gestdesp.gestaocorp.app.br
+**Produção:** https://<seu-subdominio>.vercel.app
+
