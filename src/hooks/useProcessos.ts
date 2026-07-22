@@ -178,6 +178,8 @@ export const useProcessos = () => {
         prazo: processoData.prazo || null,
         data_abertura: processoData.data_abertura || null,
         numero_processo: processoData.numero_processo || null,
+        loja_id: processoData.loja_id || null,
+        observacoes: processoData.observacoes || null,
         user_id: user.id,
       }
 
