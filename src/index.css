@@ -55,8 +55,8 @@
     --info-light: 200 88% 92%;
 
     /* Elementos de Interface */
-    --border: 220 15% 88%;
-    --input: 220 20% 96%;
+    --border: 220 15% 75%;
+    --input: 0 0% 100%;
     --ring: 214 88% 42%;
 
     --radius: 0.5rem;
