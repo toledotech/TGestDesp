@@ -173,9 +173,17 @@ export const useProcessos = () => {
       }
       // ────────────────────────────────────────────────────────────────────────
 
+      const dadosNormalizados = {
+        ...processoData,
+        prazo: processoData.prazo || null,
+        data_abertura: processoData.data_abertura || null,
+        numero_processo: processoData.numero_processo || null,
+        user_id: user.id,
+      }
+
       const { data, error } = await supabase
         .from('processos')
-        .insert({ ...processoData, user_id: user.id } as any)
+        .insert(dadosNormalizados as any)
         .select(`
           *,
           cliente:clientes(*),
