@@ -46,7 +46,7 @@ const allMenuItems: { title: string; url: string; icon: any; access: MenuAccess 
   { title: "Prazos",           url: "/prazos",       icon: AlertTriangle, access: 'all'        },
   { title: "Relatórios",       url: "/relatorios",   icon: BarChart3,     access: 'admin'      },
   { title: "Notificações",     url: "/notifications",icon: Bell,          access: 'all'        },
-  { title: "Assinatura",       url: "/assinatura",   icon: CreditCard,    access: 'admin'      },
+  { title: "Assinatura",       url: "/assinatura",   icon: CreditCard,    access: 'super_admin'},
   { title: "Gerenciar Planos", url: "/planos",       icon: Package,       access: 'super_admin'},
   { title: "Configurações",    url: "/configuracoes",icon: Settings,      access: 'admin'      },
 ]
