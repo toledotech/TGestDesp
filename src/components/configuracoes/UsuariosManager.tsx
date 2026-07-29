@@ -482,7 +482,6 @@ export function UsuariosManager() {
 
       {/* Legenda papéis */}
       <div className="text-xs text-muted-foreground space-y-1 px-1">
-        <p><span className="font-medium text-purple-600">Super Admin</span> — acesso total ao sistema, incluindo planos e todos os clientes.</p>
         <p><span className="font-medium text-red-600">Administrador</span> — acesso total ao próprio negócio, pode gerenciar funcionários.</p>
         <p><span className="font-medium text-blue-600">Funcionário</span> — acesso restrito a lançamentos: processos, clientes e agenda.</p>
       </div>
