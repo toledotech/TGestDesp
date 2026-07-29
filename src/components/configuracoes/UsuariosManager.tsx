@@ -166,7 +166,7 @@ function NovoUsuarioModal({ open, onOpenChange, onCreated }: NovoUsuarioModalPro
               <SelectContent>
                 <SelectItem value="funcionario">Funcionário</SelectItem>
                 {isAdmin() && <SelectItem value="gerente">Gerente</SelectItem>}
-                {isSuperAdmin() && <SelectItem value="admin">Administrador</SelectItem>}
+                {isAdmin() && <SelectItem value="admin">Administrador</SelectItem>}
               </SelectContent>
             </Select>
           </div>
@@ -276,7 +276,7 @@ function EditarUsuarioModal({ open, onOpenChange, usuario, onSaved }: EditarUsua
               <SelectContent>
                 <SelectItem value="funcionario">Funcionário</SelectItem>
                 {isAdmin() && <SelectItem value="gerente">Gerente</SelectItem>}
-                {isSuperAdmin() && <SelectItem value="admin">Administrador</SelectItem>}
+                {isAdmin() && <SelectItem value="admin">Administrador</SelectItem>}
               </SelectContent>
             </Select>
           </div>
