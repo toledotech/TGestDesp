@@ -21,7 +21,8 @@ import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import Subscription from "./pages/Subscription";
 import PlansManagement from "./pages/PlansManagement";
-import Lojas from "./pages/Lojas";
+import Lojas from "./pages/Lojas"
+import AdminPanel from "./pages/AdminPanel";
 
 const queryClient = new QueryClient();
 
@@ -124,6 +125,13 @@ const App = () => (
               <ProtectedRoute>
                 <Layout>
                   <Lojas />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            <Route path="/admin" element={
+              <ProtectedRoute>
+                <Layout>
+                  <AdminPanel />
                 </Layout>
               </ProtectedRoute>
             } />

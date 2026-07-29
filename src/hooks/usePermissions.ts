@@ -39,6 +39,7 @@ export interface UserProfile {
   display_name?: string
   role: UserRole
   permissions: Permissions
+  empresa_id?: string | null
 }
 
 export const usePermissions = () => {
@@ -218,6 +219,7 @@ export const usePermissions = () => {
   }
 
   const isSuperAdmin = () => userProfile?.role === 'super_admin'
+  const isSuperMaster = () => userProfile?.role === 'super_admin' && !userProfile?.empresa_id
   const isAdmin = () => userProfile?.role === 'super_admin' || userProfile?.role === 'admin'
   const isGerente = () => isAdmin() || userProfile?.role === 'gerente'
 
@@ -230,6 +232,7 @@ export const usePermissions = () => {
     loading,
     hasPermission,
     isSuperAdmin,
+    isSuperMaster,
     isAdmin,
     isGerente,
     updateUserRole,

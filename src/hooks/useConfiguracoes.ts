@@ -52,7 +52,6 @@ export const useConfiguracoes = () => {
       const { data, error } = await supabase
         .from('configuracoes_empresa')
         .select('*')
-        .eq('user_id', user.id)
         .maybeSingle()
 
       if (error) throw error
@@ -106,7 +105,7 @@ export const useConfiguracoes = () => {
 
       const { data, error } = await supabase
         .from('configuracoes_empresa')
-        .upsert(dadosFormatados, { onConflict: 'user_id' })
+        .upsert(dadosFormatados as any, { onConflict: 'empresa_id' })
         .select()
         .single()
 

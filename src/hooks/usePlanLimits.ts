@@ -88,14 +88,11 @@ export const usePlanLimits = () => {
     }
 
     try {
-      // 1. Buscar tier do usuário na tabela subscribers
-      const { data: sub } = await supabase
-        .from('subscribers')
-        .select('subscribed, subscription_tier')
-        .eq('email', user.email ?? '')
-        .maybeSingle()
+      // 1. Buscar plano da empresa do usuário
+      const { data: planoData } = await supabase
+        .rpc('get_my_plano' as any)
 
-      const tier = sub?.subscription_tier ?? 'Freemium'
+      const tier: string = (planoData as string) ?? 'Freemium'
       const isFreemium = tier === 'Freemium'
       const processosMes = getPlanoLimite(tier)
 

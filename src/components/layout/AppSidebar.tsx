@@ -12,7 +12,8 @@ import {
   CreditCard,
   Package,
   Store,
-  BookOpen
+  BookOpen,
+  Building2
 } from "lucide-react"
 import { NavLink } from "react-router-dom"
 import { usePermissions } from "@/hooks/usePermissions"
@@ -29,6 +30,10 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+
+const superMasterItems = [
+  { title: "Painel Admin", url: "/admin", icon: Building2 },
+]
 
 const allMenuItems: { title: string; url: string; icon: any; access: MenuAccess }[] = [
   { title: "Dashboard",        url: "/",             icon: Home,          access: 'all'        },
@@ -49,13 +54,17 @@ const allMenuItems: { title: string; url: string; icon: any; access: MenuAccess 
 export function AppSidebar() {
   const { state } = useSidebar()
   const isCollapsed = state === "collapsed"
-  const { isAdmin, isSuperAdmin } = usePermissions()
+  const { isAdmin, isSuperAdmin, isSuperMaster } = usePermissions()
 
-  const menuItems = allMenuItems.filter(item => {
-    if (item.access === 'super_admin') return isSuperAdmin()
-    if (item.access === 'admin') return isAdmin()
-    return true
-  })
+  // SuperMaster (sem empresa) vê apenas o Painel Admin
+  const isSM = isSuperMaster()
+  const menuItems = isSM
+    ? superMasterItems
+    : allMenuItems.filter(item => {
+        if (item.access === 'super_admin') return isSuperAdmin()
+        if (item.access === 'admin') return isAdmin()
+        return true
+      })
 
   return (
     <Sidebar collapsible="icon" className="border-r border-blue-800">
