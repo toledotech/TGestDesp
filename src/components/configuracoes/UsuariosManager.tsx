@@ -67,7 +67,7 @@ function NovoUsuarioModal({ open, onOpenChange, onCreated }: NovoUsuarioModalPro
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({ display_name: '', email: '', password: '', role: 'funcionario' })
-  const { isSuperAdmin } = usePermissions()
+  const { isSuperAdmin, isAdmin } = usePermissions()
 
   useEffect(() => {
     if (open) setForm({ display_name: '', email: '', password: '', role: 'funcionario' })
@@ -165,6 +165,7 @@ function NovoUsuarioModal({ open, onOpenChange, onCreated }: NovoUsuarioModalPro
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="funcionario">Funcionário</SelectItem>
+                {isAdmin() && <SelectItem value="gerente">Gerente</SelectItem>}
                 {isSuperAdmin() && <SelectItem value="admin">Administrador</SelectItem>}
               </SelectContent>
             </Select>
@@ -197,7 +198,7 @@ function EditarUsuarioModal({ open, onOpenChange, usuario, onSaved }: EditarUsua
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({ display_name: '', email: '', role: 'funcionario' })
-  const { isSuperAdmin } = usePermissions()
+  const { isSuperAdmin, isAdmin } = usePermissions()
 
   useEffect(() => {
     if (usuario) {
@@ -274,8 +275,8 @@ function EditarUsuarioModal({ open, onOpenChange, usuario, onSaved }: EditarUsua
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="funcionario">Funcionário</SelectItem>
+                {isAdmin() && <SelectItem value="gerente">Gerente</SelectItem>}
                 {isSuperAdmin() && <SelectItem value="admin">Administrador</SelectItem>}
-                {isSuperAdmin() && <SelectItem value="super_admin">Super Admin</SelectItem>}
               </SelectContent>
             </Select>
           </div>
@@ -433,6 +434,11 @@ export function UsuariosManager() {
 
                 {/* Badges + ações */}
                 <div className="flex items-center gap-2 shrink-0">
+                  {/* Role */}
+                  <span className={`hidden sm:inline-flex text-xs px-2 py-0.5 rounded-full border font-medium ${ROLE_BADGE[usuario.role] ?? ROLE_BADGE['usuario']}`}>
+                    {ROLE_LABELS[usuario.role] ?? usuario.role}
+                  </span>
+
                   {/* Plano */}
                   <span className={`hidden md:inline-flex text-xs px-2 py-0.5 rounded-full border font-medium ${PLAN_BADGE[usuario.subscription_tier] ?? PLAN_BADGE['Freemium']}`}>
                     {usuario.subscription_tier}
