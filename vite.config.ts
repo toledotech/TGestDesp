@@ -21,7 +21,10 @@ export default defineConfig(async ({ mode, command }) => {
       }),
       tailwindcss(),
       tanstackStart(),
-      ...(command === "build" ? [nitro({ preset: "node-server" })] : []),
+      // Vercel needs its own preset to emit the Build Output API; elsewhere keep node-server.
+      ...(command === "build"
+        ? [nitro({ preset: process.env.VERCEL ? "vercel" : "node-server" })]
+        : []),
       viteReact(),
     ],
   };
