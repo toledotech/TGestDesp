@@ -36,3 +36,8 @@ src/routeTree.gen.ts
 .nitro
 .tanstack
 
+
+# Env files (.env.example is committed)
+.env
+.env.*
+!.env.example
